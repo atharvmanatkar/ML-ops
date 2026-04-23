@@ -1,0 +1,8 @@
+stages:
+  train:
+    cmd: python main.py
+    deps:
+      - data/raw/Ai-data.csv
+      - src/
+    outs:
+      - models/model.pkl

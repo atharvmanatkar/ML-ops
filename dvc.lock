@@ -1,0 +1,19 @@
+schema: '2.0'
+stages:
+  train:
+    cmd: python main.py
+    deps:
+    - path: data/raw/Ai-data.csv
+      hash: md5
+      md5: 8667d2c9a00874c06ec6779a41b219e6
+      size: 422068
+    - path: src/
+      hash: md5
+      md5: 96cfb2cd51ed5563670a0ffc82a13c86.dir
+      size: 4217
+      nfiles: 11
+    outs:
+    - path: models/model.pkl
+      hash: md5
+      md5: 5b420e0912bc443863e25756c14a0f04
+      size: 1479925

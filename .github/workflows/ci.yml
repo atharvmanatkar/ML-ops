@@ -65,7 +65,7 @@ jobs:
 
       - name: Test prediction
         run: |
-          python -c "from src.predict import predict; print(predict([0]*10))"
+          python -c "from src.predict import predict; print(predict([0]*5))"
 
   # 🔹 JOB 4: Deploy (CD)
   deploy:

@@ -1,20 +1,28 @@
-from langchain.chat_models import ChatOpenAI
-from langchain.schema import HumanMessage
+import google.generativeai as genai
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def explain_prediction(input_data, prediction):
-    llm = ChatOpenAI(
-        temperature=0.3,
-        openai_api_key=os.getenv("OPENAI_API_KEY")
-    )
+    api_key = os.getenv("GOOGLE_API_KEY")
+
+    label = "Abnormal" if prediction == 1 else "Normal"
+
+    if not api_key:
+        return f"The system predicted '{label}' based on input features."
+
+    genai.configure(api_key=api_key)
+
+    model = genai.GenerativeModel("gemini-2.5-flash")
 
     prompt = f"""
-    Input data: {input_data}
-    Prediction: {prediction}
+    Input features: {input_data}
+    Prediction: {label}
 
-    Explain in simple terms why this prediction occurred.
+    Explain in simple and short terms why this prediction occurred.
     """
 
-    response = llm([HumanMessage(content=prompt)])
+    response = model.generate_content(prompt)
 
-    return response.content
+    return response.text

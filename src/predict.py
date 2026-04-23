@@ -1,4 +1,5 @@
 import pickle
+import numpy as np
 
 def load_model():
     with open("models/model.pkl", "rb") as f:
@@ -6,5 +7,9 @@ def load_model():
 
 def predict(input_data):
     model = load_model()
-    prediction = model.predict([input_data])
-    return prediction[0]
+    input_array = np.array(input_data).reshape(1, -1)
+
+    pred = model.predict(input_array)[0]
+    prob = model.predict_proba(input_array)[0].max()
+
+    return pred, prob

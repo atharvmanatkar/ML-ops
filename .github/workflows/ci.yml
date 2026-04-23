@@ -1,26 +1,64 @@
-name: CI Pipeline
+name: MLOps Pipeline
 
 on:
   push:
     branches: ["main"]
 
 jobs:
-  build:
+  # 🔹 JOB 1: Setup & Install
+  setup:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: 3.10
 
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run pipeline
-        run: python main.py
+  # 🔹 JOB 2: Run Pipeline (CI)
+  train:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
+
+      - run: pip install -r requirements.txt
+
+      - name: Run training pipeline
+        run: |
+          python main.py
+
+  # 🔹 JOB 3: Test Model
+  test:
+    runs-on: ubuntu-latest
+    needs: train
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
+
+      - run: pip install -r requirements.txt
+
+      - name: Test prediction
+        run: |
+          python -c "from src.predict import predict; print(predict([0]*10))"
+
+  # 🔹 JOB 4: Deploy (CD)
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Deployment step
+        run: echo "Deploying Streamlit app..."
